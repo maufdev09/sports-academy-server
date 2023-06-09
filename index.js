@@ -66,6 +66,19 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/update-admin-feedback/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          feedback: body.feedback,
+        },
+      };
+      const result = await classesCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     app.get("/get-classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
       res.send(result);

@@ -28,6 +28,7 @@ async function run() {
     const database = client.db("sportsPro");
     const userCollection = database.collection("users");
     const classesCollection = database.collection("classes");
+    const selectedClassesCollection = database.collection("selectedClasses");
 
     // Users
     app.post("/users", async (req, res) => {
@@ -107,6 +108,20 @@ async function run() {
 
     app.get("/get-classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
+      res.send(result);
+    });
+
+    // selected calss by student
+    app.post("/selected-classitem", async (req, res) => {
+      const selectedClassItem = req.body;
+      const query = { classItemId: selectedClassItem.classItemId };
+      const existingitem = await selectedClassesCollection.findOne(query);
+      if (existingitem) {
+        return res.send({ message: "allready adden in dashboard" });
+      }
+      const result = await selectedClassesCollection.insertOne(
+        selectedClassItem
+      );
       res.send(result);
     });
 

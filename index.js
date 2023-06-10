@@ -86,6 +86,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/get-classes", async (req, res) => {
+      const query = { status: "approve" };
+      const result = await classesCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.put("/update-status/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;

@@ -79,6 +79,19 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/update-status/:id", async (req, res) => {
+      const id = req.params.id;
+      const body = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: body.status,
+        },
+      };
+      const result = await classesCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     app.get("/get-classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
       res.send(result);

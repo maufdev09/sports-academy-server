@@ -125,6 +125,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/get-selected-classes/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { selectedBy: email };
+      const result = await selectedClassesCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(

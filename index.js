@@ -143,7 +143,11 @@ async function run() {
     app.get("/get-payed-classes/:email", async (req, res) => {
       const email = req.params.email;
       const query = { user: email };
-      const result = await paymentCollection.find(query).toArray();
+
+      const result = await paymentCollection
+        .find(query)
+        .sort({ date: -1 })
+        .toArray();
       res.send(result);
     });
 

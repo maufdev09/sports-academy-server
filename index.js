@@ -89,9 +89,13 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/get-classes", async (req, res) => {
+    app.get("/get-approve-classes", async (req, res) => {
       const query = { status: "approve" };
       const result = await classesCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/get-classes", async (req, res) => {
+      const result = await classesCollection.find().toArray();
       res.send(result);
     });
 
@@ -151,11 +155,20 @@ async function run() {
     // payment related api
     app.post("/payments", async (req, res) => {
       const payment = req.body;
-      const result = await paymentCollection.insertOne(payment);
+      const insertresult = await paymentCollection.insertOne(payment);
       const querydlt = { _id: new ObjectId(payment.selectedClassId) };
+      const filter = { _id: new ObjectId(payment.classItemId) };
       const deleteResult = await selectedClassesCollection.deleteOne(querydlt);
 
-      res.send(result);
+      const updateDoc = {
+        $set: {
+          totalEnrolledStudent: payment.totalEnrolledStudent + 1,
+          availableSeats: payment.availableSeats - 1,
+        },
+      };
+
+      const updateResult = await classesCollection.updateOne(filter, updateDoc);
+      res.send({ insertresult, deleteResult, updateDoc });
     });
 
     // Send a ping to confirm a successful connection

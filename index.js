@@ -49,6 +49,23 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/get-instructors", async (req, res) => {
+      const query = { role: "instructor" };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/isAdmin/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userCollection.findOne(query);
+      if (result.role === "admin") {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    });
+
     app.put("/update-user-role/:id", async (req, res) => {
       const id = req.params.id;
       const body = req.body;

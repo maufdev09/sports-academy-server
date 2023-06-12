@@ -31,6 +31,7 @@ async function run() {
     const classesCollection = database.collection("classes");
     const selectedClassesCollection = database.collection("selectedClasses");
     const paymentCollection = database.collection("payments");
+    const reviewCollection = database.collection("reviews");
 
     // Users
     app.post("/users", async (req, res) => {
@@ -49,6 +50,11 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/get-reviews", async (req, res) => {
+      const result = await reviewCollection.find().toArray();
+      res.send(result);
+    });
+
     app.get("/get-instructors", async (req, res) => {
       const query = { role: "instructor" };
       const result = await userCollection.find(query).toArray();
@@ -64,6 +70,33 @@ async function run() {
       } else {
         res.send(false);
       }
+    });
+    app.get("/isInstructor/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userCollection.findOne(query);
+      if (result.role === "instructor") {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    });
+    app.get("/isStudent/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userCollection.findOne(query);
+      if (result.role === "student") {
+        res.send(true);
+      } else {
+        res.send(false);
+      }
+    });
+
+    app.get("/get-user-role/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await userCollection.findOne(query);
+      res.send(result);
     });
 
     app.put("/update-user-role/:id", async (req, res) => {
